@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Churrasqueira - Espetinho JP</title>
+<style>
+:root{--acc:#ff6a1a;--acc2:#ffb21a;--bg:#14100d;--panel:#1e1813;--line:#3b3027;--text:#f7efe6;--muted:#a8998a;--green:#35c46e;--font:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:var(--text);font:16px/1.4 var(--font);background:radial-gradient(900px 400px at 80% -120px,#4a210d,transparent 70%) fixed,var(--bg)}
+header{position:relative;display:flex;align-items:center;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line)}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--acc),var(--acc2),var(--acc))}
+.mark{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,var(--acc2),var(--acc));font-size:26px}
+h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.01em}.sub{margin-left:auto;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;padding:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-top:5px solid var(--acc);border-radius:20px;padding:18px;box-shadow:0 12px 32px #0007}
+.card h2{margin:0 0 6px;padding-bottom:10px;border-bottom:1px dashed var(--line);font-size:34px;font-weight:800;display:flex;justify-content:space-between;align-items:center}
+.item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:21px;font-weight:700}.item:last-child{border:0;padding-bottom:0}
+.qty{background:linear-gradient(145deg,var(--acc2),var(--acc));color:#1b0f06;font-weight:800;font-size:24px;padding:4px 12px;border-radius:12px;min-width:56px;text-align:center}
+.detalhes{display:flex;flex-direction:column;flex:1}.categoria{color:var(--acc);font-size:13px;font-weight:700}.nome-produto{font-size:20px;font-weight:700}
+.btn-pronto{font:inherit;font-weight:800;font-size:16px;min-height:52px;padding:0 18px;border-radius:14px;border:2px solid var(--green);background:transparent;color:var(--green);cursor:pointer}.btn-pronto:active{background:var(--green);color:#052612}
+.vazio{grid-column:1/-1;text-align:center;color:var(--muted);font-size:24px;margin-top:70px}
+@media(max-width:600px){.grid{padding:12px;gap:12px}h1{font-size:22px}.sub{display:none}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header><span class="mark">🔥</span><h1>Churrasqueira</h1><span class="sub">Espetinhos para preparar</span></header>
+  <div class="grid" id="painel">
+    <div class="vazio">A carregar pedidos...</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyA0JWR3EyD6WnPLkycruhW9k0f6_kL8HK8",
+      authDomain: "espetinho-pedidos-jp.firebaseapp.com",
+      projectId: "espetinho-pedidos-jp",
+      storageBucket: "espetinho-pedidos-jp.firebasestorage.app",
+      messagingSenderId: "825804185421",
+      appId: "1:825804185421:web:f6c901305b62abab232104"
+    });
+    const db = firebase.firestore();
+
+    if (sessionStorage.getItem("perfil") !== "churrasqueiro") location.replace("index.html");
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+    const ref = db.collection("espetinho").doc("mesas");
+    let _ac, vistos = null;
+    function beep() { try { _ac = _ac || new AudioContext(); const o = _ac.createOscillator(); o.connect(_ac.destination); o.frequency.value = 880; o.start(); o.stop(_ac.currentTime + .3); navigator.vibrate && navigator.vibrate(200); } catch(e) {} }
+
+    window.pronto = function(mesa, id) {
+      db.runTransaction(t => t.get(ref).then(d => {
+        const arr = (d.data() || {})[mesa] || [], it = arr.find(x => x.id === id);
+        if (it) { it.status = 'pronto'; t.update(ref, {[mesa]: arr}); }
+      })).catch(e => alert("Erro: " + e.code));
+    };
+
+    ref.onSnapshot(doc => {
+      const orders = doc.exists ? doc.data() : {}, ids = new Set();
+      let html = "";
+      Object.keys(orders).sort((a, b) => a - b).forEach(mesa => {
+        const its = (orders[mesa] || []).filter(p => p.dest === "churrasqueira" && p.status === "pendente");
+        if (!its.length) return;
+        its.forEach(p => ids.add(p.id));
+        html += `<div class="card"><h2>Mesa ${mesa}</h2>${its.map(p => `<div class="item"><span class="qty">${p.qty}x</span><span style="flex:1">${esc(p.name)}</span><button class="btn-pronto" onclick="pronto('${mesa}','${p.id}')">✔️ Pronto</button></div>`).join("")}</div>`;
+      });
+      document.getElementById("painel").innerHTML = html || `<div class="vazio">Nenhum espetinho pendente 🎉</div>`;
+      if (vistos && [...ids].some(i => !vistos.has(i))) beep();
+      vistos = ids;
+    }, e => document.getElementById("painel").innerHTML = `<div class="vazio">Sem ligação: ${e.code}</div>`);
+  </script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14100d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Garçom JP">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Espetinho de Casa JP — Pedidos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#14100d;--panel:#1e1813;--panel2:#2a221b;--line:#3b3027;--ember:#ff6a1a;--flame:#ffb21a;--green:#35c46e;--red:#e5483f;--text:#f7efe6;--muted:#a8998a;--font:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;color:var(--text);font:16px/1.45 var(--font);background:radial-gradient(900px 420px at 85% -140px,#4a210d,transparent 70%) fixed,var(--bg)}
+header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:12px 18px;background:#14100def2;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:linear-gradient(90deg,var(--ember),var(--flame),var(--ember))}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,var(--flame),var(--ember));font-size:24px;box-shadow:0 6px 18px #ff6a1a55}
+header h1{margin:0;font-size:20px;font-weight:800;letter-spacing:-.01em}header p{margin:0;color:var(--muted);font-size:13px}
+.user-badge{order:2;margin-left:auto;background:var(--panel2)!important;color:var(--text)!important;border:1px solid var(--line)!important;border-radius:99px;padding:8px 14px;min-height:40px;font-size:13px}
+main{max-width:1100px;margin:auto;padding:18px;display:grid;grid-template-columns:1fr 1.15fr;gap:18px;align-items:start}
+section{background:var(--panel);padding:18px;border-radius:20px;border:1px solid var(--line);box-shadow:0 12px 32px #0006}
+h2{margin:0 0 12px;font-size:19px;font-weight:800}
+h2::before{content:"";display:inline-block;width:4px;height:1em;border-radius:2px;background:linear-gradient(var(--flame),var(--ember));margin-right:10px;vertical-align:-2px}
+label{display:block;margin:12px 0 6px;color:var(--muted);font-size:14px;font-weight:600}
+select,input,button{font:inherit;color:var(--text);border-radius:12px;border:1px solid var(--line);background:#17110d;padding:11px 13px;min-height:46px}
+select,input{width:100%}
+select:focus,input:focus,button:focus-visible{outline:2px solid var(--flame);outline-offset:2px}
+button{cursor:pointer;font-weight:700;border:0;color:#1b0f06;background:linear-gradient(145deg,var(--flame),var(--ember));transition:transform .12s,filter .12s}
+button:hover{filter:brightness(1.08)}button:active{transform:scale(.97)}
+button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.tables{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tables button{background:var(--panel2);color:var(--text);border:1px solid var(--line);min-height:56px;padding:8px 4px}
+.tables button.occ{background:#4a2c12;border-color:var(--flame);color:#ffd9a0}
+.tables button.rdy{background:var(--green);border-color:var(--green);color:#052612;animation:pulse 1.4s infinite}
+.tables button.active{box-shadow:0 0 0 3px var(--bg),0 0 0 6px var(--text)}
+@keyframes pulse{50%{box-shadow:0 0 0 7px #35c46e44}}
+.tables button.active.rdy{animation:none}
+.row{display:flex;gap:10px;align-items:flex-end}.row>*{flex:1}
+#menuPanel #painelGarcom{background:var(--panel2);box-shadow:none;border-radius:16px;padding:14px;margin-bottom:18px}
+#painelGarcom h3{margin:0 0 10px;font-size:15px;font-weight:800;color:var(--flame)}
+#listaStatusGeral{display:flex;flex-direction:column;gap:8px;max-height:240px;overflow:auto}
+.st{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--bg);border-left:4px solid var(--flame)}
+.st.ok{border-color:var(--green)}.st b{display:block}.st span{color:var(--muted);font-size:14px}
+.st em{font-style:normal;font-size:12px;font-weight:800;color:var(--flame);text-align:right}.st.ok em{color:var(--green)}
+.vz{color:var(--muted);font-size:14px}
+.cartline{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.cartline small{color:var(--muted)}.grow{flex:1;min-width:0}
+.lnhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:2px}
+.cartline>button{width:38px;height:38px;min-height:38px;padding:0;background:var(--panel2);color:var(--red);border:1px solid var(--line);font-size:20px}
+.badge{font-size:12px;font-weight:800;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.badge.wait{background:#4a2c12;color:var(--flame)}.badge.done{background:var(--panel2);color:var(--muted)}
+.cartline .deliver{background:var(--green);color:#052612;padding:6px 12px;min-height:34px}
+#cart:empty::before{content:"Nenhum item ainda. Escolha um produto e toque em Adicionar.";display:block;color:var(--muted);padding:14px 0}
+.total{font-size:32px;font-weight:800;margin:16px 0;background:linear-gradient(90deg,var(--flame),var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent}
+.actions{display:flex;flex-wrap:wrap;gap:8px}.actions button{flex:1;min-width:120px}
+.extra{margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.extra summary{font-weight:700;cursor:pointer}
+.note{color:var(--muted);font-size:13px}
+@media(max-width:750px){main{grid-template-columns:1fr;padding:12px;gap:12px}section{padding:14px;border-radius:18px}header{padding:10px 12px}header h1{font-size:17px}.mark{width:38px;height:38px;font-size:20px}.actions button{min-width:calc(50% - 8px)}input,select,button{font-size:16px}}
+@media(max-width:380px){.tables{grid-template-columns:repeat(3,1fr)}.actions button{min-width:100%}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{body{background:#fff!important;color:#000}header,.no-print,#loginScreen{display:none!important}main{display:block;padding:0}#menuPanel{display:none}#orderPanel{border:0;background:#fff;padding:0;box-shadow:none}#receipt{display:block!important;color:#000;font:12px monospace;width:72mm}#receipt h2{text-align:center;color:#000;font-size:16px}#receipt h2::before{display:none}.receiptline{display:flex;justify-content:space-between}}
+#loginScreen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(700px 500px at 80% 0,#5a270f,transparent 65%),radial-gradient(500px 400px at 0 100%,#2a1508,transparent 60%),var(--bg)}
+.login-card{position:relative;overflow:hidden;width:min(100%,390px);background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:34px 28px 28px;box-shadow:0 30px 80px #000a}
+.login-card::before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--ember),var(--flame))}
+.login-card .mark{width:58px;height:58px;font-size:30px;margin-bottom:16px}
+.login-card h1{margin:0 0 4px;font-size:27px;font-weight:800;line-height:1.1;letter-spacing:-.02em}.login-card p{color:var(--muted);margin:0 0 18px}
+.login-card button{width:100%;margin-top:18px;min-height:50px;font-size:17px}.login-error{color:#ff7b72;min-height:20px;margin-top:10px;font-size:14px}
+#app[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="loginScreen">
+ <form class="login-card" id="loginForm">
+  <div class="mark">🔥</div>
+  <h1>Espetinho de Casa JP</h1>
+  <p>Entre para atender as mesas</p>
+  <label for="waiterName">Utilizador</label>
+  <input id="waiterName" autocomplete="username" required placeholder="Digite o seu nome">
+  <label for="waiterPin">PIN</label>
+  <input id="waiterPin" type="password" inputmode="numeric" required placeholder="PIN de acesso">
+  <button type="submit">Entrar no sistema</button>
+  <div class="login-error" id="loginError"></div>
+ </form>
+</div>
+<div id="app" hidden>
+<header><button class="user-badge no-print" id="userBadge" type="button">Garçom: — · Sair</button><div class="brand"><span class="mark">🔥</span><div><h1>Espetinho de Casa JP</h1><p>Sistema de pedidos • Garçom</p></div></div></header>
+<main>
+<section id="menuPanel" class="no-print">
+  <!-- PAINEL DE STATUS DOS PEDIDOS PARA O GARÇOM -->
+<section id="painelGarcom" class="no-print">
+  <h3>🔔 Estado Geral dos Pedidos</h3>
+  <div id="listaStatusGeral">
+    <span class="vz">A carregar estados...</span>
+  </div>
+</section>
+<h2>Mesas</h2><div class="tables" id="tables"></div>
+<h2 style="margin-top:24px">Cardápio</h2>
+<label for="category">Categoria</label><select id="category"></select>
+<label for="product">Produto do cardápio</label><select id="product"></select>
+<div class="row"><div><label for="qty">Quantidade</label><input id="qty" type="number" min="1" value="1"></div><div><label>&nbsp;</label><button id="add">Adicionar à mesa</button></div></div>
+<details class="extra">
+ <summary>Produto personalizado / preço alterado</summary>
+ <p class="note">Use quando um produto não estiver no cardápio ou estiver com outro preço. O valor informado será usado apenas neste pedido.</p>
+ <label for="customName">Nome do produto</label><input id="customName" type="text" maxlength="80" placeholder="Ex.: Espetinho especial">
+ <label for="customPrice">Preço unitário (R$)</label><input id="customPrice" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ex.: 12,00">
+ <label for="customQty">Quantidade</label><input id="customQty" type="number" min="1" step="1" value="1">
+ <label for="customDest">Vai para</label><select id="customDest"><option value="churrasqueira">Churrasqueira</option><option value="cozinha" selected>Cozinha</option><option value="bar">Bar (sem preparo)</option></select><button id="addCustom" type="button" style="margin-top:10px">Adicionar produto personalizado</button>
+</details>
+<p class="note">O produto personalizado e seu preço ficam registrados no pedido da mesa.</p>
+</section>
+<section id="orderPanel">
+<h2 id="tableTitle">Selecione uma mesa</h2>
+<div id="cart"></div><div class="total" id="total">Total: R$ 0,00</div>
+<div class="actions no-print">
+<button id="bill">Ver conta</button><button id="print">Imprimir conta</button><button class="secondary" id="clear">Limpar mesa</button>
+</div>
+<div id="receipt" style="display:none"></div>
+</section>
+</main>
+</div>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+const menu={
+"Cervejas 600ml":[["Itaipava",8],["Skol Pilsen",9],["Amstel",10],["Brahma Chopp",10]],
+"Espetinhos":[["Calabresa",6],["Frango",6],["Porco",6],["Salsichão",6],["Asinha de frango",9],["Alcatra",10],["Carne de sol",10],["Carne de sol com queijo",10],["Charque",10],["Coração",10],["Cupim",10],["Frango com bacon",10],["Kafta",10],["Linguiça calabresa",8],["Linguiça toscana",8],["Medalhão de frango",10],["Medalhão recheado",10],["Queijo coalho",10],["Ovo com bacon",9],["Salsichão",8]],
+"Pão de alho gourmet":[["Bacon",9],["Camarão",10],["Carne seca com cream cheese",15],["Calabresa",9],["Tradicional",8]],
+"Pra beliscar":[["Batata frita P",10],["Batata frita G",15],["Camarão empanado 300gr",40],["Camarão alho e óleo 300ml",35],["Carne de sol com fritas",40],["Calabresa com fritas",25],["Ensopado de camarão 300ml",25],["Ensopado de marisco 300ml",25],["Fava porção 300gr",20],["Isca de frango",25],["Mocotó porção 300ml",20],["Purê de macaxeira 300gr",20],["Tripá bovina",20],["Pra beliscar (camarão, calabresa e fritas)",55]],
+"Pastéis":[["Carne seca com cream cheese",25],["Frango",20],["Frango com cream cheese",25],["Queijo",20]],
+"Caldinhos":[["Caldinho de camarão",10],["Caldinho de charque",10],["Caldinho de fava",8],["Caldinho de mocotó",10]],
+"Cachaças 300ml":[["Matuta cristal",20],["Matuta sabor",22],["Serra da Areia cristal",20],["Serra da Areia sabor",22]],
+"Destilados (dose)":[["Dreher",5],["Red Label",10],["Montila",5],["Matuta cristal",4],["Matuta sabor",5],["Serra da Areia cristal",4],["Serra da Areia sabor",5]],
+"Sucos":[["Jarra acerola",20],["Caju",10],["Cajá",10],["Graviola",10],["Manga",10],["Maracujá",12],["Jarra maracujá",24]],
+"Dindin gourmet":[["Surpresa de morango",6],["Mousse de maracujá",6],["Oreo",6],["Pudim",6],["Ninho com morango",6]]
+};
+const STORAGE_KEY="espetinho_pedidos_v1";
+const loginScreen=document.getElementById("loginScreen"), app=document.getElementById("app");
+const loginForm=document.getElementById("loginForm"), loginError=document.getElementById("loginError");
+const waiterName=document.getElementById("waiterName"), waiterPin=document.getElementById("waiterPin");
+const userBadge=document.getElementById("userBadge");
+
+const utilizadores = {
+  "jessica": { pin: "1234", perfil: "garcom" },
+  "ronaldo": { pin: "1234", perfil: "garcom" },
+  "davi": { pin: "1234", perfil: "garcom" },
+  "hermes": { pin: "1234", perfil: "garcom" },
+  "orlando": { pin: "1234", perfil: "churrasqueiro" },
+  "flavio": { pin: "1234", perfil: "cozinheiro" }
+};
+
+function entrar(nome) {
+  loginScreen.style.display="none";
+  app.hidden=false;
+  userBadge.textContent="Garçom: " + nome.charAt(0).toUpperCase() + nome.slice(1) + " · Sair";
+  userBadge.dataset.name=nome;
+}
+
+loginForm.addEventListener("submit", e => {
+  e.preventDefault();
+  const nomeDigitado = waiterName.value.trim().toLowerCase();
+  const pinDigitado = waiterPin.value;
+  const utilizador = utilizadores[nomeDigitado];
+
+  if (utilizador && utilizador.pin === pinDigitado) {
+    loginError.textContent = "";
+    sessionStorage.setItem("perfil", utilizador.perfil);
+    if (utilizador.perfil === "garcom") {
+      entrar(nomeDigitado);
+    } else if (utilizador.perfil === "churrasqueiro") {
+      window.location.href = "cozinha.html";
+    } else if (utilizador.perfil === "cozinheiro") {
+      window.location.href = "cozinheiro.html";
+    }
+  } else {
+    loginError.textContent = "Nome de utilizador ou PIN incorretos.";
+  }
+});
+
+userBadge.addEventListener("click", () => {
+  if(confirm("Deseja sair do sistema?")) {
+    app.hidden = true;
+    loginScreen.style.display = "flex";
+    waiterPin.value = "";
+    loginError.textContent = "";
+  }
+});
+const firebaseConfig = {
+  apiKey: "AIzaSyA0JWR3EyD6WnPLkycruhW9k0f6_kL8HK8",
+  authDomain: "espetinho-pedidos-jp.firebaseapp.com",
+  projectId: "espetinho-pedidos-jp",
+  storageBucket: "espetinho-pedidos-jp.firebasestorage.app",
+  messagingSenderId: "825804185421",
+  appId: "1:825804185421:web:f6c901305b62abab232104",
+  measurementId: "G-HFQSH2L05N"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let orders = Object.fromEntries(Array.from({length:12},(_,i)=>[i+1,[]]));
+let current = 1;
+
+db.collection("espetinho").doc("mesas").onSnapshot((doc) => {
+  if (doc.exists) {
+    const antes = Object.fromEntries(Object.values(orders).flat().map(p => [p.id, p.status]));
+    orders = doc.data();
+    for (let i = 1; i <= 12; i++) if (!orders[i]) orders[i] = [];
+    if (Object.values(orders).flat().some(p => p.id && antes[p.id] === 'pendente' && p.status === 'pronto')) beep();
+    render();
+
+    // ATUALIZA O PAINEL DE STATUS PARA O GARÇOM
+    const listaStatusGeral = document.getElementById("listaStatusGeral");
+    if (listaStatusGeral) {
+      listaStatusGeral.innerHTML = "";
+      let temAtividade = false;
+
+      Object.keys(orders).forEach(mesa => {
+        if (orders[mesa] && orders[mesa].length > 0) {
+          orders[mesa].filter(p => p.status !== 'entregue').forEach(p => {
+            temAtividade = true;
+            const isPronto = p.status === 'pronto';
+            const textoStatus = isPronto ? '✅ PRONTO PARA RECOLHER' : '⏳ Na Cozinha / Churrasqueira';
+
+            listaStatusGeral.innerHTML += `<div class="st ${isPronto ? 'ok' : ''}"><div><b>Mesa ${mesa}</b><span>${p.qty}x ${esc(p.name)}</span></div><em>${textoStatus}</em></div>`;
+          });
+        }
+      });
+
+      if (!temAtividade) {
+        listaStatusGeral.innerHTML = `<span class="vz">Nenhum pedido ativo no momento.</span>`;
+      }
+    }
+  }
+});
+
+// grava só a mesa alterada (não sobrescreve as outras mesas nem o status da cozinha)
+function salvarPedidos(n = current) {
+  db.collection("espetinho").doc("mesas").set({[n]: orders[n]}, {merge: true})
+    .catch(e => { console.error(e); alert("Erro ao salvar: " + e.code); });
+}
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const DEST = {"Espetinhos":"churrasqueira","Cervejas 600ml":"bar","Cachaças 300ml":"bar","Destilados (dose)":"bar","Sucos":"bar"};
+const novoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+let _ac;
+function beep() { try { _ac = _ac || new AudioContext(); const o = _ac.createOscillator(); o.connect(_ac.destination); o.frequency.value = 880; o.start(); o.stop(_ac.currentTime + .3); navigator.vibrate && navigator.vibrate([200,100,200]); } catch(e) {} }
+const money=n=>n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const category=document.getElementById("category"),product=document.getElementById("product");
+function loadCategories(){category.innerHTML=Object.keys(menu).map(c=>`<option>${c}</option>`).join("");loadProducts()}
+function loadProducts(){const items=menu[category.value]||[];product.innerHTML=items.map((p,i)=>`<option value="${i}">${p[0]} — ${money(p[1])}</option>`).join("")}
+function chooseTable(n){current=n;document.querySelectorAll(".tables button").forEach(b=>b.classList.toggle("active",+b.dataset.table===n));document.getElementById("tableTitle").textContent=`Mesa ${n}`;render()}
+function render(){
+  const cart=document.getElementById("cart");
+  cart.innerHTML="";
+  let total=0;
+  orders[current].forEach((p,i)=>{
+    let sub=p.price*p.qty;
+    total+=sub;
+    const div=document.createElement("div");
+    div.className="cartline";
+    const isPronto = p.status === 'pronto';
+    const statusHtml = p.status === 'entregue' ? `<span class="badge done">Entregue</span>`
+      : isPronto ? `<button class="deliver" data-deliver="${i}">✅ Entregar</button>`
+      : `<span class="badge wait">⏳ Pendente</span>`;
+
+    div.innerHTML=`
+      <div class="grow">
+        <div class="lnhead">
+          <b>${esc(p.name)}</b> ${statusHtml}
+        </div>
+        <small>${p.qty} × ${money(p.price)} = ${money(sub)}</small>
+      </div>
+      <button data-remove="${i}" aria-label="Remover">×</button>
+    `;
+    cart.appendChild(div);
+  });
+  document.getElementById("total").textContent="Total: "+money(total);
+  cart.querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{orders[current].splice(+b.dataset.remove,1);salvarPedidos();render()});
+  cart.querySelectorAll("[data-deliver]").forEach(b=>b.onclick=()=>{orders[current][+b.dataset.deliver].status='entregue';salvarPedidos();render()});
+  document.querySelectorAll(".tables button").forEach(b=>{const l=orders[b.dataset.table]||[],r=l.some(x=>x.status==='pronto');b.classList.toggle("rdy",r);b.classList.toggle("occ",l.length>0&&!r)});
+}
+function receiptText(){let lines=[`ESPETINHO DE CASA JP`,`CONTA — MESA ${current}`,new Date().toLocaleString("pt-BR"),"--------------------------------"];let total=0;orders[current].forEach(p=>{let sub=p.price*p.qty;total+=sub;lines.push(`${p.qty}x ${p.name}`,`   ${money(sub)}`)});lines.push("--------------------------------",`TOTAL: ${money(total)}`,"","Obrigado pela preferência!");return {lines,total}}
+function showReceipt(){const r=receiptText();document.getElementById("receipt").innerHTML=`<h2>ESPETINHO DE CASA JP</h2><p>CONTA — MESA ${current}<br>${new Date().toLocaleString("pt-BR")}</p><hr>${orders[current].map(p=>`<div class="receiptline"><span>${p.qty}x ${p.name}</span><span>${money(p.price*p.qty)}</span></div>`).join("")}<hr><div class="receiptline"><b>TOTAL</b><b>${money(r.total)}</b></div><p style="text-align:center">Obrigado pela preferência!</p>`;document.getElementById("receipt").style.display="block"}
+document.getElementById("tables").innerHTML=Object.keys(orders).map(n=>`<button data-table="${n}">Mesa ${n}</button>`).join("");document.querySelectorAll("[data-table]").forEach(b=>b.onclick=()=>chooseTable(+b.dataset.table));
+category.onchange=loadProducts;document.getElementById("add").onclick=()=>{if(!current)return;const p=menu[category.value][+product.value];if(!p)return;const qty=Math.max(1,parseInt(document.getElementById("qty").value)||1);const dest=DEST[category.value]||"cozinha";const existing=orders[current].find(x=>x.name===p[0]&&x.price===p[1]&&x.cat===category.value&&x.status==='pendente');if(existing)existing.qty+=qty;else orders[current].push({id:novoId(),name:p[0],price:p[1],qty,cat:category.value,dest,status:dest==='bar'?'entregue':'pendente',ts:Date.now()});salvarPedidos();render()};
+document.getElementById("addCustom").onclick=()=>{const name=document.getElementById("customName").value.trim();const price=Number(String(document.getElementById("customPrice").value).replace(",","."));const qty=Math.max(1,parseInt(document.getElementById("customQty").value)||1);if(!name){alert("Digite o nome do produto.");document.getElementById("customName").focus();return}if(!Number.isFinite(price)||price<=0){alert("Digite um preço válido maior que zero.");document.getElementById("customPrice").focus();return}const dest=document.getElementById("customDest").value;orders[current].push({id:novoId(),name,price,qty,cat:"Personalizado",dest,status:dest==='bar'?'entregue':'pendente',ts:Date.now()});salvarPedidos();render();document.getElementById("customName").value="";document.getElementById("customPrice").value="";document.getElementById("customQty").value="1";alert("Produto adicionado à Mesa "+current+".")};
+document.getElementById("bill").onclick=()=>{showReceipt();alert(receiptText().lines.join("\n"))};
+document.getElementById("print").onclick=()=>{showReceipt();window.print()};
+document.getElementById("clear").onclick=()=>{if(confirm(`Limpar os pedidos da Mesa ${current}?`)){orders[current]=[];salvarPedidos();render();document.getElementById("receipt").style.display="none"}};
+loadCategories();chooseTable(1);
+</script>
+<script>
+if ("serviceWorker" in navigator && location.protocol !== "file:") {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
